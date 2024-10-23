@@ -34,11 +34,11 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ADMIN"));
-        if(this.role == UserRole.MEDIC) return List.of(new SimpleGrantedAuthority("MEDIC"));
-        return List.of(new SimpleGrantedAuthority("PATIENT"));
+        if(this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        if(this.role == UserRole.MEDIC) return List.of(new SimpleGrantedAuthority("ROLE_MEDIC"));
+        return List.of(new SimpleGrantedAuthority("ROLE_PATIENT"));
     }
 
     @Override
-    public String getUsername() { return null; }
+    public String getUsername() { return this.username; }
 }
