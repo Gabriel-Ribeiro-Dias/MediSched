@@ -24,7 +24,6 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @Transactional
-@ActiveProfiles("test")
 class MedicServiceIntegrationTest {
 
     @Autowired
