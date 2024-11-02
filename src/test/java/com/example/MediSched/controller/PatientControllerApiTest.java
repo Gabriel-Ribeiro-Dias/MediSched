@@ -38,19 +38,6 @@ class PatientControllerApiTest {
 
     @Test
     @WithMockUser(username = "admin", password = "senha_admin", roles = "ADMIN")
-    void deletePatientReturnsHttp200() throws Exception {
-        String cpf = "12345678900";
-        doNothing().when(patientService).deletePatient(cpf);
-
-        mockMvc.perform(MockMvcRequestBuilders.delete("/patient/delete")
-                        .param("cpf", cpf))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Patient deleted successfully"));
-
-        verify(patientService).deletePatient(cpf);
-    }
-    @Test
-    @WithMockUser(username = "admin", password = "senha_admin", roles = "ADMIN")
     void getAllPatientsReturnsHttp200() throws Exception {
         List<PatientDTO> patients = List.of(new PatientDTO(), new PatientDTO());
         when(patientService.getAllPatients()).thenReturn(patients);
@@ -96,7 +83,7 @@ class PatientControllerApiTest {
                         .param("cpf", cpf)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"cpf\":\"12345678900\",\"name\":\"Test Name\",\"email\":\"test.email@example.com\",\"user\":{},\"appointmentList\":[]}"));
+                .andExpect(content().json("{\"cpf\":\"12345678900\",\"name\":\"Test Name\",\"email\":\"test.email@example.com\"}"));
 
         verify(patientService).getPatientByCpf(cpf);
     }

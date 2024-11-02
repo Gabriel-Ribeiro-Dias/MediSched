@@ -163,8 +163,8 @@ class MedicServiceIntegrationTest {
     }
 
     @Test
-    void deleteMedicThrowsExceptionWhenCrmIsNull() {
-        assertThrows(IllegalArgumentException.class, () -> medicService.deleteMedic(null));
+    void deleteMedicThrowsExceptionWhenCrmIsBlank() {
+        assertThrows(IllegalArgumentException.class, () -> medicService.deleteMedic(""));
     }
 
     @Test

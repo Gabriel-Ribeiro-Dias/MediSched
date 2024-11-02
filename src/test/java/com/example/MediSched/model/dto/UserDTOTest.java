@@ -6,9 +6,11 @@ import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import java.util.Set;
 import jakarta.validation.ConstraintViolation;
+import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserDTOTest {
     private Validator validator;
     private UserDTO userDTO;

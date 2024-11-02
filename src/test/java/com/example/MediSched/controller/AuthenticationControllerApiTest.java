@@ -4,6 +4,7 @@ import com.example.MediSched.infra.security.TokenService;
 import com.example.MediSched.model.User;
 import com.example.MediSched.model.dto.AuthenticationDTO;
 import com.example.MediSched.model.dto.UserDTO;
+import com.example.MediSched.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,15 +23,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
 class AuthenticationControllerApiTest {
 
     @Autowired
@@ -38,6 +37,9 @@ class AuthenticationControllerApiTest {
 
     @MockBean
     private AuthenticationManager authenticationManager;
+
+    @MockBean
+    private UserService userService;
 
     @MockBean
     private TokenService tokenService;
@@ -74,6 +76,9 @@ class AuthenticationControllerApiTest {
         UserDTO userDTO = new UserDTO();
         userDTO.setUsername("newUser");
         userDTO.setPassword("password");
+
+        // Mock the registration service to return a successful response
+        doNothing().when(userService).create(any(UserDTO.class));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
