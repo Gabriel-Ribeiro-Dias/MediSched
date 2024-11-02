@@ -7,11 +7,7 @@ import lombok.*;
 
 @Entity(name = "appointment")
 @Table(name = "tb_appointment")
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode(of = "id")
+@Data
 public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

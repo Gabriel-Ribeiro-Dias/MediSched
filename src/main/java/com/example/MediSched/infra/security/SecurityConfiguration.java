@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,11 +26,12 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/appointment/cancel/{appointmentId}").hasAnyRole("PATIENT", "MEDIC", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/appointment").hasAnyRole("PATIENT", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/appointment/list").hasRole("ADMIN")
@@ -40,8 +42,8 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/medic").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/medic/list-by-crm").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/medic/update").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/medic/delete").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/patient/delete").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/medic/list").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/user/delete").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/patient/list").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/patient/update").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/patient/").hasRole("ADMIN")

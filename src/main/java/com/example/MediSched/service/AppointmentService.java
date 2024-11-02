@@ -124,17 +124,7 @@ public class AppointmentService {
         appointment.setMedic(medicRepository.findByCrm(appointmentDTO.getMedic().getCrm()).get());
         appointment.setPatient(patientRepository.findByCpf(appointmentDTO.getPatient().getCpf()).get());
         appointment.setStatus(appointmentDTO.getStatus());
-        return appointmentRepository.save(appointment);
-    }
-    public Appointment updateAppointmentStatus(Long appointmentId, String status) {
-        Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(() -> new AppointmentNotFoundException(APPOINTMENT_NOT_FOUND));
-        AppointmentStatus newAppointmentStatus;
-        try {
-            newAppointmentStatus = AppointmentStatus.valueOf(status.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new InvalidAppointmentStatusException("Invalid appointment status: " + status);
-        }
-        appointment.setStatus(newAppointmentStatus);
-        return appointmentRepository.save(appointment);
+        appointmentRepository.save(appointment);
+        return appointment;
     }
 }

@@ -8,6 +8,7 @@ import com.example.MediSched.model.dto.MedicDTO;
 import com.example.MediSched.model.dto.PatientDTO;
 import com.example.MediSched.model.dto.UserDTO;
 import com.example.MediSched.model.enums.UserRole;
+import com.example.MediSched.repository.MedicRepository;
 import com.example.MediSched.repository.PatientRepository;
 import com.example.MediSched.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -59,6 +60,16 @@ public class UserService {
             userDTOS.add(convertToDTO(user));
         }
         return userDTOS;
+    }
+    public void deleteUser(String username) {
+        if (username == null || username.isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+        User user = (User) userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        userRepository.deleteById(user.getId());
+        if(user.getPatient() != null) patientService.deletePatient(user.getPatient().getCpf());
+        if(user.getMedic() != null) medicService.deleteMedic(user.getMedic().getCrm());
+
     }
     private User convertToEntity(UserDTO userDTO) {
         User user = new User();

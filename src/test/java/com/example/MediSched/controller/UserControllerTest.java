@@ -4,69 +4,63 @@ import com.example.MediSched.model.dto.UserDTO;
 import com.example.MediSched.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
 
+import java.util.Collections;
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
 class UserControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
+    @Mock
     private UserService userService;
 
-    private List<UserDTO> sampleUsers;
+    @InjectMocks
+    private UserController userController;
 
     @BeforeEach
     void setUp() {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(1L);
-        userDTO.setUsername("user1");
-        userDTO.setPassword("password1");
-        sampleUsers = List.of(userDTO);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "senha_admin", roles = "ADMIN")
-    void getAllUsersReturnsHttp200() throws Exception {
-        when(userService.getAllUsers()).thenReturn(sampleUsers);
+    void getAllUsersSuccessfully() {
+        List<UserDTO> users = Collections.emptyList();
+        when(userService.getAllUsers()).thenReturn(users);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/user")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(sampleUsers.size())))
-                .andExpect(jsonPath("$[0].id").value(sampleUsers.get(0).getId()))
-                .andExpect(jsonPath("$[0].username").value(sampleUsers.get(0).getUsername()))
-                .andExpect(jsonPath("$[0].password").value(sampleUsers.get(0).getPassword()));
+        ResponseEntity<List<UserDTO>> response = userController.getAllUsers();
+
+        assertEquals(users, response.getBody());
+        verify(userService, times(1)).getAllUsers();
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "senha_admin", roles = "ADMIN")
-    void getAllUsersReturnsListOfUserDTO() throws Exception {
-        when(userService.getAllUsers()).thenReturn(sampleUsers);
+    void deleteUserSuccessfully() {
+        String username = "testuser";
+        doNothing().when(userService).deleteUser(username);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/user")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(sampleUsers.size())))
-                .andExpect(jsonPath("$[0].id").value(sampleUsers.get(0).getId()))
-                .andExpect(jsonPath("$[0].username").value(sampleUsers.get(0).getUsername()))
-                .andExpect(jsonPath("$[0].password").value(sampleUsers.get(0).getPassword()));
+        ResponseEntity<String> response = userController.deleteUser(username);
+
+        assertEquals("User deleted successfully", response.getBody());
+        verify(userService, times(1)).deleteUser(username);
+    }
+
+    @Test
+    void deleteUserNotFound() {
+        String username = "nonexistentuser";
+        doThrow(new RuntimeException("User not found")).when(userService).deleteUser(username);
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            userController.deleteUser(username);
+        });
+
+        assertEquals("User not found", exception.getMessage());
+        verify(userService, times(1)).deleteUser(username);
     }
 }

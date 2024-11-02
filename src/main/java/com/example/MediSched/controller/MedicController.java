@@ -29,18 +29,6 @@ public class MedicController {
     }
 
     /**
-     * Deletes a medic by CRM.
-     *
-     * @param crm the CRM of the medic to be deleted
-     * @return a ResponseEntity indicating successful deletion
-     */
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteMedic(@RequestParam String crm){
-        medicService.deleteMedic(crm);
-        return ResponseEntity.ok("Medic deleted successfully");
-    }
-
-    /**
      * Updates a medic's details.
      *
      * @param crm the CRM of the medic to be updated
@@ -73,5 +61,14 @@ public class MedicController {
     @GetMapping("/list-by-crm")
     public ResponseEntity<List<MedicDTO>> listMedicByCrm(@RequestParam String crm){
         return ResponseEntity.ok(medicService.listMedicsByCrm(crm));
+    }
+    /**
+     * Lists all medics.
+     *
+     * @return a ResponseEntity containing a list of all medic data transfer objects
+     */
+    @GetMapping("/list")
+    public ResponseEntity<List<MedicDTO>> listAllMedics(){
+        return ResponseEntity.ok(medicService.getAllMedics());
     }
 }

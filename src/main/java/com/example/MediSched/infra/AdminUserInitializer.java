@@ -22,9 +22,11 @@ public class AdminUserInitializer {
     }
     @PostConstruct
     public void init() {
+        if(!userService.getAllUsers().stream().anyMatch(userDTO -> userDTO.getUsername().equals("admin"))) {
             UserDTO adminUser = new UserDTO();
             adminUser.setUsername("admin");
             adminUser.setPassword("senha_admin");
             userService.create(adminUser);
+        }
     }
 }

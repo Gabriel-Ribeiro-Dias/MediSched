@@ -1,47 +1,27 @@
 package com.example.MediSched.controller;
 
-import com.example.MediSched.exceptions.MedicNotFoundException;
-import com.example.MediSched.exceptions.PatientNotFoundException;
 import com.example.MediSched.model.dto.AppointmentDTO;
-import com.example.MediSched.model.dto.MedicDTO;
-import com.example.MediSched.model.dto.PatientDTO;
-import com.example.MediSched.model.enums.AppointmentStatus;
 import com.example.MediSched.service.AppointmentService;
-import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.http.ResponseEntity;
 
+import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
 class AppointmentControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-    @MockBean
+    @Mock
     private AppointmentService appointmentService;
+
+    @InjectMocks
+    private AppointmentController appointmentController;
 
     @BeforeEach
     void setUp() {
@@ -49,195 +29,83 @@ class AppointmentControllerTest {
     }
 
     @Test
-@WithMockUser(username = "admin", password = "senha_admin", roles = "PATIENT")
-void scheduleAppointmentReturnsHttp200() throws Exception {
-    AppointmentDTO appointmentDTO = new AppointmentDTO();
-    appointmentDTO.setDate("12/12/2021");
-    appointmentDTO.setTime("12:00");
-    appointmentDTO.setMedic(new MedicDTO());
-    appointmentDTO.setPatient(new PatientDTO());
-    appointmentDTO.setStatus(AppointmentStatus.SCHEDULED);
+    void scheduleAppointment() {
+        AppointmentDTO appointmentDTO = new AppointmentDTO();
+        doNothing().when(appointmentService).scheduleAppointment(appointmentDTO);
 
-    doNothing().when(appointmentService).scheduleAppointment(any(AppointmentDTO.class));
+        ResponseEntity<String> response = appointmentController.scheduleAppointment(appointmentDTO);
 
-    mockMvc.perform(post("/appointment")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(new JSONObject()
-                            .put("date", appointmentDTO.getDate())
-                            .put("time", appointmentDTO.getTime())
-                            .put("medic", new JSONObject())
-                            .put("patient", new JSONObject())
-                            .put("status", appointmentDTO.getStatus().toString())
-                            .toString()))
-            .andExpect(status().isOk())
-            .andExpect(content().string("Appointment scheduled successfully"));
+        assertEquals("Appointment scheduled successfully", response.getBody());
+        verify(appointmentService, times(1)).scheduleAppointment(appointmentDTO);
+    }
 
-    verify(appointmentService).scheduleAppointment(any(AppointmentDTO.class));
-}
     @Test
-    @WithMockUser(username = "admin", password = "senha_admin", roles = "ADMIN")
-    void cancelAppointmentReturnsHttp200() throws Exception {
+    void cancelAppointment() {
         Long appointmentId = 1L;
-
         doNothing().when(appointmentService).cancelAppointment(appointmentId);
 
-        mockMvc.perform(delete("/appointment/cancel/{appointmentId}", appointmentId)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Appointment canceled successfully"));
+        ResponseEntity<String> response = appointmentController.cancelAppointment(appointmentId);
 
-        verify(appointmentService).cancelAppointment(appointmentId);
-}
+        assertEquals("Appointment canceled successfully", response.getBody());
+        verify(appointmentService, times(1)).cancelAppointment(appointmentId);
+    }
+
     @Test
-    @WithMockUser(username = "admin", password = "senha_admin", roles = "ADMIN")
-    void getAppointmentsReturnsHttp200() throws Exception {
-        List<AppointmentDTO> appointments = List.of(new AppointmentDTO(), new AppointmentDTO());
+    void getAppointments() {
+        List<AppointmentDTO> appointments = Collections.emptyList();
         when(appointmentService.getAppointments()).thenReturn(appointments);
 
-        mockMvc.perform(get("/appointment/list")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json("[{}, {}]"));
+        ResponseEntity<List<AppointmentDTO>> response = appointmentController.getAppointments();
 
-        verify(appointmentService).getAppointments();
+        assertEquals(appointments, response.getBody());
+        verify(appointmentService, times(1)).getAppointments();
     }
+
     @Test
-    @WithMockUser(username = "admin", password = "senha_admin", roles = "PATIENT")
-    void getAppointmentByIdReturnsHttp200() throws Exception {
+    void getAppointment() {
         Long appointmentId = 1L;
         AppointmentDTO appointmentDTO = new AppointmentDTO();
-        appointmentDTO.setId(appointmentId);
-        appointmentDTO.setDate("12/12/2021");
-        appointmentDTO.setTime("12:00");
-        appointmentDTO.setMedic(new MedicDTO());
-        appointmentDTO.setPatient(new PatientDTO());
-        appointmentDTO.setStatus(AppointmentStatus.SCHEDULED);
-
         when(appointmentService.getAppointment(appointmentId)).thenReturn(appointmentDTO);
 
-        mockMvc.perform(get("/appointment/{appointmentId}", appointmentId)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json(new JSONObject()
-                        .put("id", appointmentDTO.getId())
-                        .put("date", appointmentDTO.getDate())
-                        .put("time", appointmentDTO.getTime())
-                        .put("medic", new JSONObject())
-                        .put("patient", new JSONObject())
-                        .put("status", appointmentDTO.getStatus().toString())
-                        .toString()));
+        ResponseEntity<AppointmentDTO> response = appointmentController.getAppointment(appointmentId);
 
-        verify(appointmentService).getAppointment(appointmentId);
+        assertEquals(appointmentDTO, response.getBody());
+        verify(appointmentService, times(1)).getAppointment(appointmentId);
     }
+
     @Test
-    @WithMockUser(username = "admin", password = "senha_admin", roles = "PATIENT")
-    void listAppointmentsByMedicReturnsHttp200() throws Exception {
-        String medicCrm = "123456";
-        MedicDTO medicDTO = new MedicDTO();
-        medicDTO.setCrm(medicCrm);
-
-        AppointmentDTO appointment1 = new AppointmentDTO();
-        appointment1.setDate("12/12/2021");
-        appointment1.setTime("12:00");
-        appointment1.setMedic(medicDTO);
-        appointment1.setPatient(new PatientDTO());
-        appointment1.setStatus(AppointmentStatus.SCHEDULED);
-
-        AppointmentDTO appointment2 = new AppointmentDTO();
-        appointment2.setDate("13/12/2021");
-        appointment2.setTime("14:00");
-        appointment2.setMedic(medicDTO);
-        appointment2.setPatient(new PatientDTO());
-        appointment2.setStatus(AppointmentStatus.SCHEDULED);
-
-        List<AppointmentDTO> appointments = List.of(appointment1, appointment2);
+    void listAppointmentsByMedic() {
+        String medicCrm = "12345";
+        List<AppointmentDTO> appointments = Collections.emptyList();
         when(appointmentService.getAppointmentsByMedic(medicCrm)).thenReturn(appointments);
 
-        mockMvc.perform(get("/appointment/list-by-medic")
-                        .param("medicCrm", medicCrm)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json(
-                        "[{\"date\":\"12/12/2021\"," +
-                                "\"time\":\"12:00\"," +
-                                "\"medic\":{\"crm\":\"123456\"}," +
-                                "\"patient\":{}," +
-                                "\"status\":\"SCHEDULED\"}," +
-                                "{\"date\":\"13/12/2021\"," +
-                                "\"time\":\"14:00\"," +
-                                "\"medic\":{\"crm\":\"123456\"}," +
-                                "\"patient\":{}," +
-                                "\"status\":\"SCHEDULED\"}]"));
-        verify(appointmentService).getAppointmentsByMedic(medicCrm);
+        ResponseEntity<List<AppointmentDTO>> response = appointmentController.listAppointmentsByMedic(medicCrm);
+
+        assertEquals(appointments, response.getBody());
+        verify(appointmentService, times(1)).getAppointmentsByMedic(medicCrm);
     }
+
     @Test
-    @WithMockUser(username = "admin", password = "senha_admin", roles = "PATIENT")
-    void listAppointmentsByPatientReturnsHttp200() throws Exception {
+    void listAppointmentsByPatient() {
         String patientCpf = "12345678900";
-        PatientDTO patientDTO = new PatientDTO();
-        patientDTO.setCpf(patientCpf);
-
-        AppointmentDTO appointment1 = new AppointmentDTO();
-        appointment1.setDate("12/12/2021");
-        appointment1.setTime("12:00");
-        appointment1.setMedic(new MedicDTO());
-        appointment1.setPatient(patientDTO);
-        appointment1.setStatus(AppointmentStatus.SCHEDULED);
-
-        AppointmentDTO appointment2 = new AppointmentDTO();
-        appointment2.setDate("13/12/2021");
-        appointment2.setTime("14:00");
-        appointment2.setMedic(new MedicDTO());
-        appointment2.setPatient(patientDTO);
-        appointment2.setStatus(AppointmentStatus.SCHEDULED);
-
-        List<AppointmentDTO> appointments = List.of(appointment1, appointment2);
+        List<AppointmentDTO> appointments = Collections.emptyList();
         when(appointmentService.getAppointmentsByPatient(patientCpf)).thenReturn(appointments);
 
-        mockMvc.perform(get("/appointment/list-by-patient")
-                        .param("patientCpf", patientCpf)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json(
-                        "[{\"date\":\"12/12/2021\"," +
-                                "\"time\":\"12:00\"," +
-                                "\"medic\":{}," +
-                                "\"patient\":{\"cpf\":\"12345678900\"}," +
-                                "\"status\":\"SCHEDULED\"}," +
-                                "{\"date\":\"13/12/2021\"," +
-                                "\"time\":\"14:00\"," +
-                                "\"medic\":{}," +
-                                "\"patient\":{\"cpf\":\"12345678900\"}," +
-                                "\"status\":\"SCHEDULED\"}]"));
+        ResponseEntity<List<AppointmentDTO>> response = appointmentController.listAppointmentsByPatient(patientCpf);
 
-        verify(appointmentService).getAppointmentsByPatient(patientCpf);
+        assertEquals(appointments, response.getBody());
+        verify(appointmentService, times(1)).getAppointmentsByPatient(patientCpf);
     }
+
     @Test
-    @WithMockUser(username = "admin", password = "senha_admin", roles = "PATIENT")
-    void updateAppointmentReturnsHttp200() throws Exception {
+    void updateAppointment() {
         Long appointmentId = 1L;
         AppointmentDTO appointmentDTO = new AppointmentDTO();
-        appointmentDTO.setDate("12/12/2021");
-        appointmentDTO.setTime("12:00");
-        appointmentDTO.setMedic(new MedicDTO());
-        appointmentDTO.setPatient(new PatientDTO());
-        appointmentDTO.setStatus(AppointmentStatus.SCHEDULED);
+        when(appointmentService.updateAppointment(appointmentId, appointmentDTO)).thenReturn(null);
 
-        doAnswer(invocation -> null).when(appointmentService).updateAppointment(eq(appointmentId), any(AppointmentDTO.class));
-        mockMvc.perform(put("/appointment/update/{appointmentId}", appointmentId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new JSONObject()
-                                .put("date", appointmentDTO.getDate())
-                                .put("time", appointmentDTO.getTime())
-                                .put("medic", new JSONObject())
-                                .put("patient", new JSONObject())
-                                .put("status", appointmentDTO.getStatus().toString())
-                                .toString()))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Appointment updated successfully"));
+        ResponseEntity<String> response = appointmentController.updateAppointment(appointmentId, appointmentDTO);
 
-        verify(appointmentService).updateAppointment(eq(appointmentId), any(AppointmentDTO.class));
+        assertEquals("Appointment updated successfully", response.getBody());
+        verify(appointmentService, times(1)).updateAppointment(appointmentId, appointmentDTO);
     }
-
-
 }

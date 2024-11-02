@@ -28,18 +28,6 @@ public class PatientController {
     }
 
     /**
-     * Deletes a patient by CPF.
-     *
-     * @param cpf the CPF of the patient to be deleted
-     * @return a ResponseEntity indicating successful deletion
-     */
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deletePatient(@RequestParam String cpf){
-        patientService.deletePatient(cpf);
-        return ResponseEntity.ok("Patient deleted successfully");
-    }
-
-    /**
      * Retrieves a list of all patients.
      *
      * @return a ResponseEntity containing a list of patient data transfer objects

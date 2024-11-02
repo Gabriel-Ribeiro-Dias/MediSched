@@ -4,6 +4,7 @@ import com.example.MediSched.model.dto.UserDTO;
 import com.example.MediSched.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,5 +38,16 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers(){
         return ResponseEntity.ok(userService.getAllUsers());
+    }
+    /**
+     * Deletes a user by username.
+     *
+     * @param username the username of the user to be deleted
+     * @return a ResponseEntity containing a success message
+     */
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteUser(String username){
+        userService.deleteUser(username);
+        return ResponseEntity.ok("User deleted successfully");
     }
 }
