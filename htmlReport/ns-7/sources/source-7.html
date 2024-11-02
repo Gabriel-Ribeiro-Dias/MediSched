@@ -1,0 +1,92 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PatientDTO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.MediSched.model.dto</a>
+</div>
+
+<h1>Coverage Summary for Class: PatientDTO (com.example.MediSched.model.dto)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">PatientDTO</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.MediSched.model.dto;
+&nbsp;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import jakarta.validation.constraints.*;
+&nbsp;import lombok.Data;
+&nbsp;import org.hibernate.validator.constraints.br.CPF;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Data
+&nbsp;public class PatientDTO {
+&nbsp;    @Schema(description = &quot;Patient&#39;s name&quot;, example = &quot;John Doe&quot;)
+&nbsp;    @NotBlank(message = &quot;Name is mandatory&quot;)
+&nbsp;    @Size(min = 1, max = 100, message = &quot;Name must be between 1 and 100 characters&quot;)
+&nbsp;    private String name;
+&nbsp;    @Schema(description = &quot;Patient&#39;s CPF&quot;, example = &quot;12345678901&quot;)
+&nbsp;    @NotBlank(message = &quot;CPF is mandatory&quot;)
+&nbsp;    @Pattern(regexp = &quot;^[0-9]{11}$&quot;, message = &quot;CPF must have 11 numbers&quot;)
+&nbsp;    private String cpf;
+&nbsp;    @Schema(description = &quot;Patient&#39;s email&quot;, example = &quot;example@gmail.com&quot;)
+&nbsp;    @NotBlank(message = &quot;Email is mandatory&quot;)
+&nbsp;    @Email(message = &quot;Email must be valid&quot;)
+&nbsp;    private String email;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-11-01 01:43</div>
+</div>
+</body>
+</html>

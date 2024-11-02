@@ -1,0 +1,92 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > MedicDTO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.MediSched.model.dto</a>
+</div>
+
+<h1>Coverage Summary for Class: MedicDTO (com.example.MediSched.model.dto)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">MedicDTO</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.MediSched.model.dto;
+&nbsp;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import jakarta.validation.constraints.NotBlank;
+&nbsp;import jakarta.validation.constraints.Size;
+&nbsp;import lombok.Data;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Data
+&nbsp;public class MedicDTO {
+&nbsp;    @Schema(description = &quot;Medic&#39;s name&quot;, example = &quot;Dr. House&quot;)
+&nbsp;    @NotBlank(message = &quot;Name is mandatory&quot;)
+&nbsp;    @Size(min = 2, max = 100, message = &quot;Name must be between 2 and 100 characters&quot;)
+&nbsp;    private String name;
+&nbsp;    @Schema(description = &quot;Medic&#39;s expertise&quot;, example = &quot;Cardiology&quot;)
+&nbsp;    @NotBlank(message = &quot;Expertise is mandatory&quot;)
+&nbsp;    @Size(min = 2, max = 100, message = &quot;Expertise must be between 2 and 100 characters&quot;)
+&nbsp;    private String expertise;
+&nbsp;    @Schema(description = &quot;Medic&#39;s CRM&quot;, example = &quot;12345&quot;)
+&nbsp;    @NotBlank(message = &quot;CRM is mandatory&quot;)
+&nbsp;    @Size(min = 5, max = 20, message = &quot;CRM must be between 5 and 20 characters&quot;)
+&nbsp;    private String crm;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-11-01 01:43</div>
+</div>
+</body>
+</html>

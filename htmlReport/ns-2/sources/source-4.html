@@ -1,0 +1,179 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PatientController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.MediSched.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: PatientController (com.example.MediSched.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PatientController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (1/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    28,6%
+  </span>
+  <span class="absValue">
+    (2/7)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.MediSched.controller;
+&nbsp;
+&nbsp;import com.example.MediSched.model.dto.PatientDTO;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import com.example.MediSched.service.PatientService;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * Controller for handling patient-related requests.
+&nbsp; */
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/patient&quot;)
+&nbsp;public class PatientController {
+&nbsp;
+&nbsp;    private final PatientService patientService;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a PatientController with the specified PatientService.
+&nbsp;     *
+&nbsp;     * @param patientService the patient service
+&nbsp;     */
+&nbsp;    @Autowired
+<b class="fc">&nbsp;    public PatientController(PatientService patientService){</b>
+<b class="fc">&nbsp;        this.patientService = patientService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves a list of all patients.
+&nbsp;     *
+&nbsp;     * @return a ResponseEntity containing a list of patient data transfer objects
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/list&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;PatientDTO&gt;&gt; getAllPatients(){
+<b class="nc">&nbsp;        return ResponseEntity.ok(patientService.getAllPatients());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates a patient&#39;s details.
+&nbsp;     *
+&nbsp;     * @param cpf the CPF of the patient to be updated
+&nbsp;     * @param patient the patient data transfer object containing updated details
+&nbsp;     * @return a ResponseEntity indicating successful update
+&nbsp;     */
+&nbsp;    @PutMapping(&quot;/update&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; updatePatient(@RequestParam String cpf, @RequestBody PatientDTO patient){
+<b class="nc">&nbsp;        patientService.updatePatient(cpf, patient);</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(&quot;Patient updated successfully&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves a patient by CPF.
+&nbsp;     *
+&nbsp;     * @param cpf the CPF of the patient to be retrieved
+&nbsp;     * @return a ResponseEntity containing the patient data transfer object
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/&quot;)
+&nbsp;    public ResponseEntity&lt;PatientDTO&gt; getPatientByCpf(@RequestParam String cpf){
+<b class="nc">&nbsp;        return ResponseEntity.ok(patientService.getPatientByCpf(cpf));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Lists patients by CPF.
+&nbsp;     *
+&nbsp;     * @param cpf the CPF to filter patients
+&nbsp;     * @return a ResponseEntity containing a list of patient data transfer objects
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/list-by-cpf&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;PatientDTO&gt;&gt; listPatientByCpf(@RequestParam String cpf){
+<b class="nc">&nbsp;        return ResponseEntity.ok(patientService.listPatientsByCpf(cpf));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-11-01 01:43</div>
+</div>
+</body>
+</html>

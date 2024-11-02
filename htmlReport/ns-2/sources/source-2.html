@@ -1,0 +1,170 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AuthenticationController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.MediSched.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: AuthenticationController (com.example.MediSched.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AuthenticationController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33,3%
+  </span>
+  <span class="absValue">
+    (1/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    40%
+  </span>
+  <span class="absValue">
+    (4/10)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.MediSched.controller;
+&nbsp;
+&nbsp;import com.example.MediSched.infra.security.TokenService;
+&nbsp;import com.example.MediSched.model.*;
+&nbsp;import com.example.MediSched.model.dto.*;
+&nbsp;import com.example.MediSched.service.UserService;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.security.authentication.AuthenticationManager;
+&nbsp;import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+&nbsp;import org.springframework.web.bind.annotation.PostMapping;
+&nbsp;import org.springframework.web.bind.annotation.RequestBody;
+&nbsp;import org.springframework.web.bind.annotation.RequestMapping;
+&nbsp;import org.springframework.web.bind.annotation.RestController;
+&nbsp;
+&nbsp;/**
+&nbsp; * Controller for handling authentication-related requests.
+&nbsp; */
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/auth&quot;)
+&nbsp;public class AuthenticationController {
+&nbsp;    private final AuthenticationManager authenticationManager;
+&nbsp;    private final UserService userService;
+&nbsp;    private final TokenService tokenService;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs an AuthenticationController with the specified dependencies.
+&nbsp;     *
+&nbsp;     * @param authenticationManager the authentication manager
+&nbsp;     * @param userService the user service
+&nbsp;     * @param tokenService the token service
+&nbsp;     */
+&nbsp;    @Autowired
+&nbsp;    public AuthenticationController(AuthenticationManager authenticationManager,
+<b class="fc">&nbsp;                                    UserService userService, TokenService tokenService) {</b>
+<b class="fc">&nbsp;        this.authenticationManager = authenticationManager;</b>
+<b class="fc">&nbsp;        this.userService = userService;</b>
+<b class="fc">&nbsp;        this.tokenService = tokenService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Authenticates a user and generates a token.
+&nbsp;     *
+&nbsp;     * @param data the authentication data transfer object containing username and password
+&nbsp;     * @return a ResponseEntity containing the generated token
+&nbsp;     */
+&nbsp;    @PostMapping(&quot;/login&quot;)
+&nbsp;    public ResponseEntity&lt;LoginResponseDTO&gt; login(@RequestBody AuthenticationDTO data) {
+<b class="nc">&nbsp;        var usernamePassword = new UsernamePasswordAuthenticationToken(data.username(), data.password());</b>
+<b class="nc">&nbsp;        var auth = this.authenticationManager.authenticate(usernamePassword);</b>
+<b class="nc">&nbsp;        var token = tokenService.generateToken((User) auth.getPrincipal());</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(new LoginResponseDTO(token));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Registers a new user.
+&nbsp;     *
+&nbsp;     * @param userDTO the user data transfer object containing user details
+&nbsp;     * @return a ResponseEntity indicating successful registration
+&nbsp;     */
+&nbsp;    @PostMapping(&quot;/register&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; register(@RequestBody UserDTO userDTO) {
+<b class="nc">&nbsp;        userService.create(userDTO);</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok().body(&quot;User registered successfully&quot;);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-11-01 01:43</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,195 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PatientService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.MediSched.service</a>
+</div>
+
+<h1>Coverage Summary for Class: PatientService (com.example.MediSched.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PatientService</td>
+<td class="coverageStat">
+  <span class="percent">
+    11,1%
+  </span>
+  <span class="absValue">
+    (1/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    2,6%
+  </span>
+  <span class="absValue">
+    (1/39)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">PatientService$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    11,1%
+  </span>
+  <span class="absValue">
+    (1/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    2,6%
+  </span>
+  <span class="absValue">
+    (1/39)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.MediSched.service;
+&nbsp;
+&nbsp;import com.example.MediSched.exceptions.PatientAlreadyExistsException;
+&nbsp;import com.example.MediSched.exceptions.PatientNotFoundException;
+&nbsp;import com.example.MediSched.model.Patient;
+&nbsp;import com.example.MediSched.model.User;
+&nbsp;import com.example.MediSched.model.dto.PatientDTO;
+&nbsp;import com.example.MediSched.repository.PatientRepository;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.validation.annotation.Validated;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Service
+&nbsp;@Validated
+<b class="fc">&nbsp;public class PatientService {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private PatientRepository patientRepository;
+&nbsp;
+&nbsp;    public Patient create(@Valid PatientDTO data, User user) {
+<b class="nc">&nbsp;        if(patientRepository.findByCpf(data.getCpf()).isPresent()) throw new PatientAlreadyExistsException(&quot;Alredy exists a patient with this CPF.&quot;);</b>
+<b class="nc">&nbsp;        Patient patient = convertToEntity(data);</b>
+<b class="nc">&nbsp;        patient.setUser(user);</b>
+<b class="nc">&nbsp;        return patientRepository.save(patient);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private Patient convertToEntity(PatientDTO data) {
+<b class="nc">&nbsp;        Patient patient = new Patient();</b>
+<b class="nc">&nbsp;        patient.setName(data.getName());</b>
+<b class="nc">&nbsp;        patient.setEmail(data.getEmail());</b>
+<b class="nc">&nbsp;        patient.setCpf(data.getCpf());</b>
+<b class="nc">&nbsp;        return patient;</b>
+&nbsp;    }
+&nbsp;    public void deletePatient(String cpf){
+<b class="nc">&nbsp;        if(cpf == null || cpf.isEmpty()) throw new IllegalArgumentException(&quot;CPF cannot be null or empty&quot;);</b>
+<b class="nc">&nbsp;        Patient patient = patientRepository.findByCpf(cpf).orElseThrow(() -&gt; new PatientNotFoundException());</b>
+<b class="nc">&nbsp;        patientRepository.deleteById(patient.getId());</b>
+&nbsp;    }
+&nbsp;    public void updatePatient(String cpf, @Valid PatientDTO patient){
+<b class="nc">&nbsp;        if(cpf == null || cpf.isEmpty()) throw new IllegalArgumentException(&quot;CPF cannot be null or empty&quot;);</b>
+<b class="nc">&nbsp;        Patient patientToUpdate = patientRepository.findByCpf(cpf).orElseThrow(() -&gt; new PatientNotFoundException());</b>
+<b class="nc">&nbsp;        patientToUpdate.setName(patient.getName());</b>
+<b class="nc">&nbsp;        patientToUpdate.setEmail(patient.getEmail());</b>
+<b class="nc">&nbsp;        patientToUpdate.setCpf(patient.getCpf());</b>
+<b class="nc">&nbsp;        patientRepository.save(patientToUpdate);</b>
+&nbsp;    }
+&nbsp;    public PatientDTO getPatientByCpf(String cpf){
+<b class="nc">&nbsp;        if(cpf == null || cpf.isEmpty()) throw new IllegalArgumentException(&quot;CPF cannot be null or empty&quot;);</b>
+<b class="nc">&nbsp;        PatientDTO patient = convertToDTO(patientRepository.findByCpf(cpf).orElseThrow(() -&gt; new PatientNotFoundException()));</b>
+<b class="nc">&nbsp;        if(patient == null) throw new PatientNotFoundException();</b>
+<b class="nc">&nbsp;        return patient;</b>
+&nbsp;    }
+&nbsp;    public List&lt;PatientDTO&gt; getAllPatients(){
+<b class="nc">&nbsp;        List&lt;PatientDTO&gt; patientDTOS = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        for(Patient patient : patientRepository.findAll()){</b>
+<b class="nc">&nbsp;            patientDTOS.add(convertToDTO(patient));</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return patientDTOS;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private PatientDTO convertToDTO(Patient patient) {
+<b class="nc">&nbsp;        PatientDTO patientDTO = new PatientDTO();</b>
+<b class="nc">&nbsp;        patientDTO.setName(patient.getName());</b>
+<b class="nc">&nbsp;        patientDTO.setEmail(patient.getEmail());</b>
+<b class="nc">&nbsp;        patientDTO.setCpf(patient.getCpf());</b>
+<b class="nc">&nbsp;        return patientDTO;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;PatientDTO&gt; listPatientsByCpf(String cpf) {
+<b class="nc">&nbsp;        if(cpf == null || cpf.isEmpty()) throw new IllegalArgumentException(&quot;CPF cannot be null or empty&quot;);</b>
+<b class="nc">&nbsp;        List&lt;PatientDTO&gt; patientDTOS = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        for(Patient patient : patientRepository.findAllByCpf(cpf)){</b>
+<b class="nc">&nbsp;            patientDTOS.add(convertToDTO(patient));</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return patientDTOS;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-11-01 01:43</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,100 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Patient</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.MediSched.model</a>
+</div>
+
+<h1>Coverage Summary for Class: Patient (com.example.MediSched.model)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">Patient$HibernateInstantiator$QNolfv0M</td>
+  </tr>
+  <tr>
+    <td class="name">Patient$HibernateProxy$TvGjg2AX</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.MediSched.model;
+&nbsp;
+&nbsp;import jakarta.persistence.*;
+&nbsp;import jakarta.validation.constraints.*;
+&nbsp;import lombok.*;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Entity(name = &quot;patient&quot;)
+&nbsp;@Table(name = &quot;tb_patient&quot;)
+&nbsp;@Data
+&nbsp;public class Patient {
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+&nbsp;    private Long id;
+&nbsp;    @Column
+&nbsp;    private String name;
+&nbsp;    @Column
+&nbsp;    private String cpf;
+&nbsp;    @Column
+&nbsp;    private String email;
+&nbsp;    @OneToOne(mappedBy = &quot;patient&quot;)
+&nbsp;    private User user;
+&nbsp;    @OneToMany(mappedBy = &quot;patient&quot;)
+&nbsp;    private List&lt;Appointment&gt; appointment;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-11-01 01:43</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,105 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AppointmentDTO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.MediSched.model.dto</a>
+</div>
+
+<h1>Coverage Summary for Class: AppointmentDTO (com.example.MediSched.model.dto)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">AppointmentDTO</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.MediSched.model.dto;
+&nbsp;
+&nbsp;import com.example.MediSched.model.Medic;
+&nbsp;import com.example.MediSched.model.Patient;
+&nbsp;import com.example.MediSched.model.enums.AppointmentStatus;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import jakarta.persistence.*;
+&nbsp;import jakarta.validation.constraints.NotBlank;
+&nbsp;import jakarta.validation.constraints.NotNull;
+&nbsp;import jakarta.validation.constraints.Pattern;
+&nbsp;import jakarta.validation.constraints.Size;
+&nbsp;import lombok.Data;
+&nbsp;
+&nbsp;@Data
+&nbsp;public class AppointmentDTO {
+&nbsp;    @Schema(hidden = true)
+&nbsp;    private Long id;
+&nbsp;    @Schema(description = &quot;Appointment&#39;s date&quot;, example = &quot;01/01/2022&quot;)
+&nbsp;    @Column
+&nbsp;    @NotBlank(message = &quot;Date is mandatory&quot;)
+&nbsp;    @Pattern(regexp = &quot;\\d{2}/\\d{2}/\\d{4}&quot;, message = &quot;Date must be in the format dd/MM/yyyy&quot;)
+&nbsp;    private String date;
+&nbsp;    @Schema(description = &quot;Appointment&#39;s time&quot;, example = &quot;08:00&quot;)
+&nbsp;    @Column
+&nbsp;    @NotBlank(message = &quot;Time is mandatory&quot;)
+&nbsp;    @Pattern(regexp = &quot;\\d{2}:\\d{2}&quot;, message = &quot;Time must be in the format HH:mm&quot;)
+&nbsp;    private String time;
+&nbsp;    @Schema(description = &quot;Appointment&#39;s medic data&quot;)
+&nbsp;    private MedicDTO medic;
+&nbsp;    @Schema(description = &quot;Appointment&#39;s patient data&quot;)
+&nbsp;    private PatientDTO patient;
+&nbsp;    @Schema(description = &quot;Appointment&#39;s status&quot;, example = &quot;SCHEDULED&quot;)
+&nbsp;    @Column
+&nbsp;    @NotNull(message = &quot;Status is mandatory&quot;)
+&nbsp;    @Enumerated(EnumType.STRING)
+&nbsp;    private AppointmentStatus status;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-11-01 01:43</div>
+</div>
+</body>
+</html>

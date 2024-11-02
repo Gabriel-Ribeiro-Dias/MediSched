@@ -1,0 +1,199 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > MedicService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.MediSched.service</a>
+</div>
+
+<h1>Coverage Summary for Class: MedicService (com.example.MediSched.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MedicService</td>
+<td class="coverageStat">
+  <span class="percent">
+    11,1%
+  </span>
+  <span class="absValue">
+    (1/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    2,5%
+  </span>
+  <span class="absValue">
+    (1/40)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">MedicService$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    11,1%
+  </span>
+  <span class="absValue">
+    (1/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    2,5%
+  </span>
+  <span class="absValue">
+    (1/40)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.MediSched.service;
+&nbsp;
+&nbsp;import com.example.MediSched.exceptions.MedicAlreadyExistsException;
+&nbsp;import com.example.MediSched.exceptions.MedicNotFoundException;
+&nbsp;import com.example.MediSched.model.Medic;
+&nbsp;import com.example.MediSched.model.User;
+&nbsp;import com.example.MediSched.model.dto.MedicDTO;
+&nbsp;import com.example.MediSched.repository.MedicRepository;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.validation.annotation.Validated;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;@Service
+&nbsp;@Validated
+<b class="fc">&nbsp;public class MedicService {</b>
+&nbsp;    @Autowired
+&nbsp;    private MedicRepository medicRepository;
+&nbsp;
+&nbsp;    public Medic create(@Valid MedicDTO data, User user) {
+<b class="nc">&nbsp;        if(!medicRepository.findByCrm(data.getCrm()).isEmpty()) throw new MedicAlreadyExistsException();</b>
+<b class="nc">&nbsp;        Medic medic = convertToEntity(data);</b>
+<b class="nc">&nbsp;        medic.setUser(user);</b>
+<b class="nc">&nbsp;        return medicRepository.save(medic);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private Medic convertToEntity(MedicDTO data) {
+<b class="nc">&nbsp;        Medic medic = new Medic();</b>
+<b class="nc">&nbsp;        medic.setName(data.getName());</b>
+<b class="nc">&nbsp;        medic.setCrm(data.getCrm());</b>
+<b class="nc">&nbsp;        medic.setExpertise(data.getExpertise());</b>
+<b class="nc">&nbsp;        return medic;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;MedicDTO&gt; getAllMedics() {
+<b class="nc">&nbsp;        List&lt;MedicDTO&gt; medicDTOS = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        for (Medic medic : medicRepository.findAll()) {</b>
+<b class="nc">&nbsp;            medicDTOS.add(ConvertToDTO(medic));</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return medicDTOS;</b>
+&nbsp;    }
+&nbsp;    public MedicDTO getMedicByCrm(String crm) {
+<b class="nc">&nbsp;        if (crm == null || crm.isEmpty()) throw new IllegalArgumentException(&quot;CRM cannot be null or empty&quot;);</b>
+<b class="nc">&nbsp;        MedicDTO medic = ConvertToDTO(medicRepository.findByCrm(crm).orElseThrow(() -&gt; new MedicNotFoundException()));</b>
+<b class="nc">&nbsp;        if (medic == null) throw new MedicNotFoundException();</b>
+<b class="nc">&nbsp;        return medic;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private MedicDTO ConvertToDTO(Medic medic) {
+<b class="nc">&nbsp;        MedicDTO medicDTO = new MedicDTO();</b>
+<b class="nc">&nbsp;        medicDTO.setName(medic.getName());</b>
+<b class="nc">&nbsp;        medicDTO.setCrm(medic.getCrm());</b>
+<b class="nc">&nbsp;        medicDTO.setExpertise(medic.getExpertise());</b>
+<b class="nc">&nbsp;        return medicDTO;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void updateMedic(String crm, @Valid MedicDTO medic) {
+<b class="nc">&nbsp;        Optional&lt;Medic&gt; medicOptional = medicRepository.findByCrm(crm);</b>
+<b class="nc">&nbsp;        if (medicOptional.isEmpty()) throw new MedicNotFoundException();</b>
+<b class="nc">&nbsp;        Medic medicToUpdate = medicOptional.get();</b>
+<b class="nc">&nbsp;        medicToUpdate.setName(medic.getName());</b>
+<b class="nc">&nbsp;        medicToUpdate.setExpertise(medic.getExpertise());</b>
+<b class="nc">&nbsp;        medicToUpdate.setCrm(medic.getCrm());</b>
+<b class="nc">&nbsp;        medicRepository.save(medicToUpdate);</b>
+&nbsp;
+&nbsp;    }
+&nbsp;    public void deleteMedic(String crm) {
+<b class="nc">&nbsp;        if (crm.isBlank() || crm == null) throw new IllegalArgumentException(&quot;CRM cannot be null or empty&quot;);</b>
+<b class="nc">&nbsp;        Medic medic = medicRepository.findByCrm(crm).orElseThrow(()-&gt;new MedicNotFoundException());</b>
+<b class="nc">&nbsp;        medicRepository.deleteById(medic.getId());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;MedicDTO&gt; listMedicsByCrm(String crm) {
+<b class="nc">&nbsp;        if (crm == null || crm.isEmpty()) throw new IllegalArgumentException(&quot;CRM cannot be null or empty&quot;);</b>
+<b class="nc">&nbsp;        List&lt;MedicDTO&gt; medicDTOS = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        for (Medic medic : medicRepository.findAllByCrm(crm)) {</b>
+<b class="nc">&nbsp;            medicDTOS.add(ConvertToDTO(medic));</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return medicDTOS;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-11-01 01:43</div>
+</div>
+</body>
+</html>

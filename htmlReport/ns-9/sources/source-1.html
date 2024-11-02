@@ -1,0 +1,254 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AppointmentService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.MediSched.service</a>
+</div>
+
+<h1>Coverage Summary for Class: AppointmentService (com.example.MediSched.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AppointmentService</td>
+<td class="coverageStat">
+  <span class="percent">
+    9,1%
+  </span>
+  <span class="absValue">
+    (1/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    1,3%
+  </span>
+  <span class="absValue">
+    (1/77)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">AppointmentService$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    9,1%
+  </span>
+  <span class="absValue">
+    (1/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    1,3%
+  </span>
+  <span class="absValue">
+    (1/77)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.MediSched.service;
+&nbsp;
+&nbsp;import com.example.MediSched.exceptions.*;
+&nbsp;import com.example.MediSched.model.Appointment;
+&nbsp;import com.example.MediSched.model.dto.AppointmentDTO;
+&nbsp;import com.example.MediSched.model.dto.MedicDTO;
+&nbsp;import com.example.MediSched.model.dto.PatientDTO;
+&nbsp;import com.example.MediSched.model.enums.AppointmentStatus;
+&nbsp;import com.example.MediSched.repository.AppointmentRepository;
+&nbsp;import com.example.MediSched.repository.MedicRepository;
+&nbsp;import com.example.MediSched.repository.PatientRepository;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.validation.annotation.Validated;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Service
+&nbsp;@Validated
+<b class="fc">&nbsp;public class AppointmentService {</b>
+&nbsp;    private static final String MEDIC_NOT_FOUND = &quot;Medic not found&quot;;
+&nbsp;    private static final String PATIENT_NOT_FOUND = &quot;Patient not found&quot;;
+&nbsp;    private static final String MEDIC_NOT_AVAILABLE = &quot;Medic not available at this time&quot;;
+&nbsp;    private static final String APPOINTMENT_ALREADY_SCHEDULED = &quot;Appointment already scheduled&quot;;
+&nbsp;    private static final String APPOINTMENT_NOT_FOUND = &quot;Appointment not found&quot;;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private AppointmentRepository appointmentRepository;
+&nbsp;    @Autowired
+&nbsp;    private MedicRepository medicRepository;
+&nbsp;    @Autowired
+&nbsp;    private PatientRepository patientRepository;
+&nbsp;
+&nbsp;    public void scheduleAppointment(@Valid AppointmentDTO appointmentDTO) {
+<b class="nc">&nbsp;        medicRepository.findByCrm(appointmentDTO.getMedic().getCrm()).orElseThrow(() -&gt; new MedicNotFoundException(MEDIC_NOT_FOUND));</b>
+<b class="nc">&nbsp;        patientRepository.findByCpf(appointmentDTO.getPatient().getCpf()).orElseThrow(() -&gt; new PatientNotFoundException(PATIENT_NOT_FOUND));</b>
+<b class="nc">&nbsp;        if (appointmentRepository.existsByMedicCrmAndDateAndTime(</b>
+<b class="nc">&nbsp;                appointmentDTO.getMedic().getCrm(),</b>
+<b class="nc">&nbsp;                appointmentDTO.getDate(),</b>
+<b class="nc">&nbsp;                appointmentDTO.getTime())) { throw new MedicNotAvailableException(MEDIC_NOT_AVAILABLE); }</b>
+<b class="nc">&nbsp;        if (appointmentRepository.existsByMedicCrmAndPatientCpfAndDateAndTime(</b>
+<b class="nc">&nbsp;                appointmentDTO.getMedic().getCrm(),</b>
+<b class="nc">&nbsp;                appointmentDTO.getPatient().getCpf(),</b>
+<b class="nc">&nbsp;                appointmentDTO.getDate(),</b>
+<b class="nc">&nbsp;                appointmentDTO.getTime())) { throw new AppointmentAlreadyScheduledException(APPOINTMENT_ALREADY_SCHEDULED); }</b>
+<b class="nc">&nbsp;        Appointment appointment = convertToEntity(appointmentDTO);</b>
+<b class="nc">&nbsp;        appointment.setStatus(AppointmentStatus.SCHEDULED);</b>
+<b class="nc">&nbsp;        appointmentRepository.save(appointment);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private AppointmentDTO convertToDTO(Appointment appointment) {
+<b class="nc">&nbsp;        AppointmentDTO appointmentDTO = new AppointmentDTO();</b>
+<b class="nc">&nbsp;        appointmentDTO.setId(appointment.getId());</b>
+<b class="nc">&nbsp;        appointmentDTO.setDate(appointment.getDate());</b>
+<b class="nc">&nbsp;        appointmentDTO.setTime(appointment.getTime());</b>
+&nbsp;
+<b class="nc">&nbsp;        MedicDTO medicDTO = new MedicDTO();</b>
+<b class="nc">&nbsp;        medicDTO.setName(appointment.getMedic().getName());</b>
+<b class="nc">&nbsp;        medicDTO.setCrm(appointment.getMedic().getCrm());</b>
+<b class="nc">&nbsp;        medicDTO.setExpertise(appointment.getMedic().getExpertise());</b>
+<b class="nc">&nbsp;        appointmentDTO.setMedic(medicDTO);</b>
+&nbsp;
+<b class="nc">&nbsp;        PatientDTO patientDTO = new PatientDTO();</b>
+<b class="nc">&nbsp;        patientDTO.setName(appointment.getPatient().getName());</b>
+<b class="nc">&nbsp;        patientDTO.setEmail(appointment.getPatient().getEmail());</b>
+<b class="nc">&nbsp;        patientDTO.setCpf(appointment.getPatient().getCpf());</b>
+<b class="nc">&nbsp;        appointmentDTO.setPatient(patientDTO);</b>
+<b class="nc">&nbsp;        appointmentDTO.setStatus(appointment.getStatus());</b>
+<b class="nc">&nbsp;        return appointmentDTO;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private Appointment convertToEntity(AppointmentDTO appointmentDTO) {
+<b class="nc">&nbsp;        Appointment appointment = new Appointment();</b>
+<b class="nc">&nbsp;        appointment.setDate(appointmentDTO.getDate());</b>
+<b class="nc">&nbsp;        appointment.setTime(appointmentDTO.getTime());</b>
+<b class="nc">&nbsp;        appointment.setMedic(medicRepository.findByCrm(appointmentDTO.getMedic().getCrm()).get());</b>
+<b class="nc">&nbsp;        appointment.setPatient(patientRepository.findByCpf(appointmentDTO.getPatient().getCpf()).get());</b>
+<b class="nc">&nbsp;        return appointment;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void cancelAppointment(Long appointmentId) {
+<b class="nc">&nbsp;        Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(() -&gt; new AppointmentNotFoundException(APPOINTMENT_NOT_FOUND));</b>
+<b class="nc">&nbsp;        appointment.setStatus(AppointmentStatus.CANCELED);</b>
+<b class="nc">&nbsp;        appointmentRepository.save(appointment);</b>
+&nbsp;    };
+&nbsp;    public List&lt;AppointmentDTO&gt; getAppointments() {
+<b class="nc">&nbsp;        List&lt;AppointmentDTO&gt; appointmentDTOList = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        List&lt;Appointment&gt; appointmentList = appointmentRepository.findAll();</b>
+<b class="nc">&nbsp;        for (Appointment appointment : appointmentList) {</b>
+<b class="nc">&nbsp;            appointmentDTOList.add(convertToDTO(appointment));</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return appointmentDTOList;</b>
+&nbsp;    }
+&nbsp;    public AppointmentDTO getAppointment(Long appointmentId) {
+<b class="nc">&nbsp;        return convertToDTO(appointmentRepository.findById(appointmentId).orElseThrow(() -&gt; new AppointmentNotFoundException(APPOINTMENT_NOT_FOUND)));</b>
+&nbsp;    }
+&nbsp;    public List&lt;AppointmentDTO&gt; getAppointmentsByMedic(String medicCrm) {
+<b class="nc">&nbsp;        medicRepository.findByCrm(medicCrm).orElseThrow(() -&gt; new MedicNotFoundException(MEDIC_NOT_FOUND));</b>
+<b class="nc">&nbsp;        List&lt;AppointmentDTO&gt; appointmentDTOList = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        List&lt;Appointment&gt; appointmentList = appointmentRepository.findByMedicCrm(medicCrm);</b>
+<b class="nc">&nbsp;        for (Appointment appointment : appointmentList) {</b>
+<b class="nc">&nbsp;            appointmentDTOList.add(convertToDTO(appointment));</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return appointmentDTOList;</b>
+&nbsp;    }
+&nbsp;    public List&lt;AppointmentDTO&gt; getAppointmentsByPatient(String patientCpf) {
+<b class="nc">&nbsp;        patientRepository.findByCpf(patientCpf).orElseThrow(() -&gt; new PatientNotFoundException(PATIENT_NOT_FOUND));</b>
+<b class="nc">&nbsp;        List&lt;AppointmentDTO&gt; appointmentDTOList = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        List&lt;Appointment&gt; appointmentList = appointmentRepository.findByPatientCpf(patientCpf);</b>
+<b class="nc">&nbsp;        for (Appointment appointment : appointmentList) {</b>
+<b class="nc">&nbsp;            appointmentDTOList.add(convertToDTO(appointment));</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return appointmentDTOList;</b>
+&nbsp;    }
+&nbsp;    public Appointment updateAppointment(Long appointmentId, @Valid AppointmentDTO appointmentDTO) {
+<b class="nc">&nbsp;        Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(() -&gt; new AppointmentNotFoundException(APPOINTMENT_NOT_FOUND));</b>
+<b class="nc">&nbsp;        if (appointmentRepository.existsByMedicCrmAndDateAndTime(appointment.getMedic().getCrm(), appointmentDTO.getDate(), appointmentDTO.getTime())) {</b>
+<b class="nc">&nbsp;            throw new MedicNotAvailableException(MEDIC_NOT_AVAILABLE);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        appointment.setDate(appointmentDTO.getDate());</b>
+<b class="nc">&nbsp;        appointment.setTime(appointmentDTO.getTime());</b>
+<b class="nc">&nbsp;        appointment.setMedic(medicRepository.findByCrm(appointmentDTO.getMedic().getCrm()).get());</b>
+<b class="nc">&nbsp;        appointment.setPatient(patientRepository.findByCpf(appointmentDTO.getPatient().getCpf()).get());</b>
+<b class="nc">&nbsp;        appointment.setStatus(appointmentDTO.getStatus());</b>
+<b class="nc">&nbsp;        return appointmentRepository.save(appointment);</b>
+&nbsp;    }
+&nbsp;    public Appointment updateAppointmentStatus(Long appointmentId, String status) {
+<b class="nc">&nbsp;        Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(() -&gt; new AppointmentNotFoundException(APPOINTMENT_NOT_FOUND));</b>
+&nbsp;        AppointmentStatus newAppointmentStatus;
+&nbsp;        try {
+<b class="nc">&nbsp;            newAppointmentStatus = AppointmentStatus.valueOf(status.toUpperCase());</b>
+<b class="nc">&nbsp;        } catch (IllegalArgumentException e) {</b>
+<b class="nc">&nbsp;            throw new InvalidAppointmentStatusException(&quot;Invalid appointment status: &quot; + status);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        appointment.setStatus(newAppointmentStatus);</b>
+<b class="nc">&nbsp;        return appointmentRepository.save(appointment);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-11-01 01:43</div>
+</div>
+</body>
+</html>

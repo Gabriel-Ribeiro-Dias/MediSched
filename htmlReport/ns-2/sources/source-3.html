@@ -1,0 +1,178 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > MedicController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.MediSched.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: MedicController (com.example.MediSched.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MedicController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (1/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    28,6%
+  </span>
+  <span class="absValue">
+    (2/7)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.MediSched.controller;
+&nbsp;
+&nbsp;import com.example.MediSched.model.Medic;
+&nbsp;import com.example.MediSched.model.dto.MedicDTO;
+&nbsp;import com.example.MediSched.service.MedicService;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * Controller for handling medic-related requests.
+&nbsp; */
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/medic&quot;)
+&nbsp;public class MedicController {
+&nbsp;
+&nbsp;    private final MedicService medicService;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a MedicController with the specified MedicService.
+&nbsp;     *
+&nbsp;     * @param medicService the medic service
+&nbsp;     */
+&nbsp;    @Autowired
+<b class="fc">&nbsp;    public MedicController(MedicService medicService){</b>
+<b class="fc">&nbsp;        this.medicService = medicService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates a medic&#39;s details.
+&nbsp;     *
+&nbsp;     * @param crm the CRM of the medic to be updated
+&nbsp;     * @param medic the medic data transfer object containing updated details
+&nbsp;     * @return a ResponseEntity indicating successful update
+&nbsp;     */
+&nbsp;    @PutMapping(&quot;/update&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; updateMedic(@RequestParam String crm, @RequestBody MedicDTO medic){
+<b class="nc">&nbsp;        medicService.updateMedic(crm, medic);</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(&quot;Medic updated successfully&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves a medic by CRM.
+&nbsp;     *
+&nbsp;     * @param crm the CRM of the medic to be retrieved
+&nbsp;     * @return a ResponseEntity containing the medic data transfer object
+&nbsp;     */
+&nbsp;    @GetMapping
+&nbsp;    public ResponseEntity&lt;MedicDTO&gt; getMedic(@RequestParam String crm){
+<b class="nc">&nbsp;        return ResponseEntity.ok(medicService.getMedicByCrm(crm));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Lists medics by CRM.
+&nbsp;     *
+&nbsp;     * @param crm the CRM to filter medics
+&nbsp;     * @return a ResponseEntity containing a list of medic data transfer objects
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/list-by-crm&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;MedicDTO&gt;&gt; listMedicByCrm(@RequestParam String crm){
+<b class="nc">&nbsp;        return ResponseEntity.ok(medicService.listMedicsByCrm(crm));</b>
+&nbsp;    }
+&nbsp;    /**
+&nbsp;     * Lists all medics.
+&nbsp;     *
+&nbsp;     * @return a ResponseEntity containing a list of all medic data transfer objects
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/list&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;MedicDTO&gt;&gt; listAllMedics(){
+<b class="nc">&nbsp;        return ResponseEntity.ok(medicService.getAllMedics());</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-11-01 01:43</div>
+</div>
+</body>
+</html>
