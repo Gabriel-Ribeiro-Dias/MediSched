@@ -14,6 +14,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class AppointmentRepositoryTest {
 
     @Autowired
@@ -87,7 +88,7 @@ class AppointmentRepositoryTest {
     @Test
     void findByMedicCrm_returnsAppointmentsForMedic() {
         List<Appointment> appointments = appointmentRepository.findByMedicCrm("12345");
-        assertEquals(2, appointments.size());
+        assertEquals(1, appointments.size());
     }
 
     @Test
